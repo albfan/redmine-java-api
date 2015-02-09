@@ -38,4 +38,13 @@ public class RedmineJSONGeneratorTest {
 				"dummy", version, RedmineJSONBuilder::writeVersion);
 		assertTrue(generatedJSON.contains("\"custom_field_values\":{\"2\":\"myValue\"}"));
 	}
+	@Test
+	public void onlySetFieldsAreAddedToJSonEvenIfTheyAreNull() {
+		Issue issue = new Issue();
+		issue.setSubject("subj1");
+		issue.setDoneRatio(null);
+		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", issue, RedmineJSONBuilder.ISSUE_WRITER);
+		assertTrue(generatedJSON.contains("\"subject\":\"subj1\","));
+		assertTrue(generatedJSON.contains("\"done_ratio\":null"));
+	}
 }

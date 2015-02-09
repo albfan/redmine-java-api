@@ -9,6 +9,8 @@ import com.taskadapter.redmineapi.bean.IssueCategory;
 import com.taskadapter.redmineapi.bean.IssueRelation;
 import com.taskadapter.redmineapi.bean.Membership;
 import com.taskadapter.redmineapi.bean.Project;
+import com.taskadapter.redmineapi.bean.Property;
+import com.taskadapter.redmineapi.bean.PropertyStorage;
 import com.taskadapter.redmineapi.bean.Role;
 import com.taskadapter.redmineapi.bean.TimeEntry;
 import com.taskadapter.redmineapi.bean.Tracker;
@@ -195,15 +197,16 @@ public class RedmineJSONBuilder {
 	}
 
 	public static void writeIssue(final JSONWriter writer, Issue issue) throws JSONException {
+        PropertyStorage storage = issue.getStorage();
 		JsonOutput.addIfNotNull(writer, "id", issue.getId());
-		JsonOutput.addIfNotNull(writer, "subject", issue.getSubject());
+		addIfSet(writer, "subject", storage, Issue.SUBJECT);
 		JsonOutput.addIfNotNull(writer, "parent_issue_id", issue.getParentId());
 		JsonOutput.addIfNotNull(writer, "estimated_hours",
 				issue.getEstimatedHours());
 		JsonOutput.addIfNotNull(writer, "spent_hours", issue.getSpentHours());
 		JsonOutput.addIfNotNull(writer, "assigned_to_id", issue.getAssigneeId());
 		JsonOutput.addIfNotNull(writer, "priority_id", issue.getPriorityId());
-		JsonOutput.addIfNotNull(writer, "done_ratio", issue.getDoneRatio());
+        addIfSet(writer, "done_ratio", storage, Issue.DONE_RATIO);
 		JsonOutput.addIfNotNull(writer, "is_private", issue.isPrivateIssue());
         if (issue.getProject() != null) {
             // Checked in Redmine 2.6.0: updating issues based on
@@ -221,7 +224,7 @@ public class RedmineJSONBuilder {
         }
         if (issue.getAuthor() != null)
 			JsonOutput.addIfNotNull(writer, "author_id", issue.getAuthor().getId());
-		addShort2(writer, "start_date", issue.getStartDate());
+		addIfSet(writer, "start_date", storage, Issue.START_DATE, RedmineDateUtils.SHORT_DATE_FORMAT_V2.get());
 		addIfNotNullShort2(writer, "due_date", issue.getDueDate());
 		if (issue.getTracker() != null)
 			JsonOutput.addIfNotNull(writer, "tracker_id", issue.getTracker().getId());
@@ -254,6 +257,19 @@ public class RedmineJSONBuilder {
 		 * Journals and Relations cannot be set for an issue during creation or
 		 * updates.
 		 */
+	}
+
+	private static void addIfSet(JSONWriter writer, String jsonKeyName, PropertyStorage storage, Property<?> property) throws JSONException {
+		if (storage.isPropertySet(property)) {
+			writer.key(jsonKeyName);
+			writer.value(storage.get(property));
+		}
+	}
+
+	private static void addIfSet(JSONWriter writer, String jsonKeyName, PropertyStorage storage, Property<Date> property, SimpleDateFormat format) throws JSONException {
+		if (storage.isPropertySet(property)) {
+			JsonOutput.add(writer, jsonKeyName, storage.get(property), format);
+		}
 	}
 
 	public static void writeUpload(JSONWriter writer, Attachment attachment)
