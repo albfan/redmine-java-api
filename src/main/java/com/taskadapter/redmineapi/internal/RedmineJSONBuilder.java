@@ -225,7 +225,7 @@ public class RedmineJSONBuilder {
         if (issue.getAuthor() != null)
 			JsonOutput.addIfNotNull(writer, "author_id", issue.getAuthor().getId());
 		addIfSet(writer, "start_date", storage, Issue.START_DATE, RedmineDateUtils.SHORT_DATE_FORMAT_V2.get());
-		addIfNotNullShort2(writer, "due_date", issue.getDueDate());
+		addIfSet(writer, "due_date", storage, Issue.DUE_DATE, RedmineDateUtils.SHORT_DATE_FORMAT_V2.get());
 		if (issue.getTracker() != null)
 			JsonOutput.addIfNotNull(writer, "tracker_id", issue.getTracker().getId());
 		JsonOutput.addIfNotNull(writer, "description", issue.getDescription());

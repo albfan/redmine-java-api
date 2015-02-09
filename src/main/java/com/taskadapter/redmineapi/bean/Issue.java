@@ -29,18 +29,29 @@ public class Issue implements Identifiable {
 
     public final static Property<String> SUBJECT = new Property<String>(String.class, "subject");
     public final static Property<Date> START_DATE = new Property<Date>(Date.class, "startDate");
+    public final static Property<Date> DUE_DATE = new Property<Date>(Date.class, "dueDate");
+    public final static Property<Date> CREATED_ON = new Property<Date>(Date.class, "createdOn");
+    public final static Property<Date> UPDATED_ON = new Property<Date>(Date.class, "updatedOn");
     public final static Property<Integer> DONE_RATIO = new Property<Integer>(Integer.class, "doneRatio");
+    public final static Property<Integer> PARENT_ID = new Property<Integer>(Integer.class, "parentId");
+    public final static Property<Float> ESTIMATED_HOURS = new Property<Float>(Float.class, "estimatedHours");
+    public final static Property<Float> SPENT_HOURS = new Property<Float>(Float.class, "spentHours");
 
     private Integer parentId;
     private Float estimatedHours;
     private Float spentHours;
     private Integer assigneeId;
     private String assigneeName;
+    /**
+     * Some comment describing an issue update.
+     */
+    public final static Property<String> NOTES = new Property<String>(String.class, "notes");
+
+    private User assignee;
     private String priorityText;
     private Integer priorityId;
     private Project project;
     private User author;
-    private Date dueDate;
     private Tracker tracker;
     private String description;
     private Date createdOn;
@@ -51,11 +62,6 @@ public class Issue implements Identifiable {
     private Version targetVersion;
     private IssueCategory category;
     private boolean privateIssue = false;
-
-    /**
-     * Some comment describing the issue update
-     */
-    private String notes;
 
     /**
      * can't have two custom fields with the same ID in the collection, that's why it is declared
@@ -137,19 +143,19 @@ public class Issue implements Identifiable {
     }
 
     public Float getEstimatedHours() {
-        return estimatedHours;
+        return storage.get(ESTIMATED_HOURS);
     }
 
     public void setEstimatedHours(Float estimatedTime) {
-        this.estimatedHours = estimatedTime;
+        storage.set(ESTIMATED_HOURS, estimatedTime);
     }
 
     public Float getSpentHours() {
-        return spentHours;
+        return storage.get(SPENT_HOURS);
     }
 
     public void setSpentHours(Float spentHours) {
-         this.spentHours = spentHours;
+        storage.set(SPENT_HOURS, spentHours);
     }
 
   /**
@@ -158,11 +164,11 @@ public class Issue implements Identifiable {
      * @return NULL, if there's no parent
      */
     public Integer getParentId() {
-        return parentId;
+        return storage.get(PARENT_ID);
     }
 
     public void setParentId(Integer parentId) {
-        this.parentId = parentId;
+        storage.set(PARENT_ID, parentId);
     }
 
     @Override
@@ -190,11 +196,11 @@ public class Issue implements Identifiable {
     }
 
     public Date getDueDate() {
-        return dueDate;
+        return storage.get(DUE_DATE);
     }
 
     public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+        storage.set(DUE_DATE, dueDate);
     }
 
     public User getAuthor() {
@@ -225,19 +231,19 @@ public class Issue implements Identifiable {
     }
 
     public Date getCreatedOn() {
-        return createdOn;
+        return storage.get(CREATED_ON);
     }
 
     public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
+        storage.set(CREATED_ON, createdOn);
     }
 
     public Date getUpdatedOn() {
-        return updatedOn;
+        return storage.get(UPDATED_ON);
     }
 
     public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
+        storage.set(UPDATED_ON, updatedOn);
     }
 
     public Date getClosedOn() {
@@ -293,14 +299,14 @@ public class Issue implements Identifiable {
     }
 
     public String getNotes() {
-        return notes;
+        return storage.get(NOTES);
     }
 
     /**
      * @param notes Some comment describing the issue update
      */
     public void setNotes(String notes) {
-        this.notes = notes;
+        storage.set(NOTES, notes);
     }
 
     /**
@@ -376,6 +382,9 @@ public class Issue implements Identifiable {
         this.children.addAll(children);
     }
 
+    /**
+     * Issues are considered equal if their IDs are equal. what about two issues with null ids?
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
