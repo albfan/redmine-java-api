@@ -30,14 +30,25 @@ public class IssueTest {
         Date originalStartDate = calendar.getTime();
         issue.setStartDate(originalStartDate);
 
-        final Issue clonedIssue = issue.clone();
+        User assignee = UserFactory.create(55);
+        String originalLogin = "login1";
+        String originalMail = "mail";
+        assignee.setLogin(originalLogin);
+        assignee.setMail(originalMail);
+        issue.setAssignee(assignee);
+
+        final Issue cloned = issue.cloneDeep();
         issue.setSubject("updated");
         calendar.add(Calendar.DAY_OF_MONTH, 10);
         issue.setStartDate(calendar.getTime());
         issue.setDoneRatio(999);
+        issue.getAssignee().setLogin("newlogin");
+        issue.getAssignee().setMail("new mail");
 
-        assertThat(clonedIssue.getSubject()).isEqualTo("subj1");
-        assertThat(clonedIssue.getStartDate()).isEqualTo(originalStartDate);
-        assertThat(clonedIssue.getDoneRatio()).isEqualTo(initialDoneRatio);
+        assertThat(cloned.getSubject()).isEqualTo("subj1");
+        assertThat(cloned.getStartDate()).isEqualTo(originalStartDate);
+        assertThat(cloned.getDoneRatio()).isEqualTo(initialDoneRatio);
+        assertThat(cloned.getAssignee().getLogin()).isEqualTo(originalLogin);
+        assertThat(cloned.getAssignee().getMail()).isEqualTo(originalMail);
     }
 }

@@ -1,6 +1,6 @@
 package com.taskadapter.redmineapi.bean;
 
-public final class Property<T> {
+public class Property<T> {
 
     private final Class<T> type;
     private final String name;
@@ -18,7 +18,15 @@ public final class Property<T> {
         return type;
     }
 
-    T deepClone(Object t) {
+    T cloneDeep(Object t) {
         return (T) t;
+    }
+
+    @Override
+    public String toString() {
+        return "Property{" +
+                "type=" + type +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

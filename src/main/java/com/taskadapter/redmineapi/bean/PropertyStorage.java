@@ -23,7 +23,7 @@ public final class PropertyStorage {
         for (Map.Entry<Property<?>, Object> entry : map.entrySet()) {
             Property<?> property = entry.getKey();
 
-            Object clonedValue = property.deepClone(property.getType().cast(entry.getValue()));
+            Object clonedValue = property.cloneDeep(property.getType().cast(entry.getValue()));
             newStorage.set(property, clonedValue);
         }
         return newStorage;

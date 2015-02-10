@@ -176,15 +176,17 @@ public class RedmineJSONBuilder {
 
 	public static void writeUser(final JSONWriter writer, User user)
 			throws JSONException {
-		JsonOutput.addIfNotNull(writer, "id", user.getId());
-		JsonOutput.addIfNotNull(writer, "login", user.getLogin());
-		JsonOutput.addIfNotNull(writer, "password", user.getPassword());
-		JsonOutput.addIfNotNull(writer, "firstname", user.getFirstName());
-		JsonOutput.addIfNotNull(writer, "lastname", user.getLastName());
-		JsonOutput.addIfNotNull(writer, "name", user.getFullName());
-		JsonOutput.addIfNotNull(writer, "mail", user.getMail());
-		JsonOutput.addIfNotNull(writer, "auth_source_id", user.getAuthSourceId());
-		JsonOutput.addIfNotNull(writer, "status", user.getStatus());
+		PropertyStorage storage = user.getStorage();
+		addIfSet(writer, "id", storage, User.ID);
+		addIfSet(writer, "login", storage, User.LOGIN);
+		addIfSet(writer, "password", storage, User.PASSWORD);
+		addIfSet(writer, "firstname", storage, User.FIRST_NAME);
+		addIfSet(writer, "lastname", storage, User.LAST_NAME);
+		// TODO I don't think this "name" is required... check this.
+//		addIfSet(writer, "name", storage, User.FULL_NAME);
+		addIfSet(writer, "mail", storage, User.MAIL);
+		addIfSet(writer, "auth_source_id", storage, User.AUTH_SOURCE_ID);
+		addIfSet(writer, "status", storage, User.STATUS);
 		addIfNotNullFull(writer, "created_on", user.getCreatedOn());
 		addIfNotNullFull(writer, "last_login_on", user.getLastLoginOn());
 		writeCustomFields(writer, user.getCustomFields());
@@ -192,8 +194,9 @@ public class RedmineJSONBuilder {
 	}
 
     public static void writeGroup(final JSONWriter writer, Group group) throws JSONException {
-		JsonOutput.addIfNotNull(writer, "id", group.getId());
-		JsonOutput.addIfNotNull(writer, "name", group.getName());
+		PropertyStorage storage = group.getStorage();
+		addIfSet(writer, "id", storage, Group.ID);
+		addIfSet(writer, "name", storage, Group.NAME);
 	}
 
 	public static void writeIssue(final JSONWriter writer, Issue issue) throws JSONException {
