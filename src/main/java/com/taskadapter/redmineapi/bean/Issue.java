@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -21,9 +22,9 @@ public class Issue implements Identifiable {
     /**
      * database ID.
      */
-    private final Integer id;
+    private Optional<Integer> id = Optional.empty();
 
-    private String subject;
+    private Optional<String> subject = Optional.empty();
     private Integer parentId;
     private Float estimatedHours;
     private Float spentHours;
@@ -34,7 +35,7 @@ public class Issue implements Identifiable {
     private Integer doneRatio;
     private Project project;
     private User author;
-    private Date startDate;
+    private Optional<Date> startDate = Optional.empty();
     private Date dueDate;
     private Tracker tracker;
     private String description;
@@ -68,12 +69,10 @@ public class Issue implements Identifiable {
      * @param id database ID.
      */
     Issue(Integer id) {
-        this.id = id;
+        this.id = Optional.of(id);
     }
 
-    public Issue() {
-        this.id = null;
-    }
+    public Issue() {}
 
     public Project getProject() {
         return project;
@@ -159,15 +158,23 @@ public class Issue implements Identifiable {
      * @return id. can be NULL for Issues not added to Redmine yet
      */
     public Integer getId() {
-        return id;
+        return id.orElse(null);
+    }
+
+    public boolean isIdPresent() {
+        return id.isPresent();
     }
 
     public String getSubject() {
-        return subject;
+        return subject.orElse(null);
     }
 
     public void setSubject(String subject) {
-        this.subject = subject;
+        this.subject = Optional.ofNullable(subject);
+    }
+
+    public boolean isSubjectPresent() {
+        return subject.isPresent();
     }
 
     public User getAuthor() {
@@ -179,11 +186,15 @@ public class Issue implements Identifiable {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return startDate.orElse(null);
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = Optional.ofNullable(startDate);
+    }
+
+    public boolean isStartDatePresent() {
+        return startDate.isPresent();
     }
 
     public Date getDueDate() {

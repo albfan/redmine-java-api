@@ -195,8 +195,12 @@ public class RedmineJSONBuilder {
 	}
 
 	public static void writeIssue(final JSONWriter writer, Issue issue) throws JSONException {
-		JsonOutput.addIfNotNull(writer, "id", issue.getId());
-		JsonOutput.addIfNotNull(writer, "subject", issue.getSubject());
+		if (issue.isIdPresent()) {
+			JsonOutput.add(writer, "id", issue.getId());
+		}
+		if (issue.isSubjectPresent()) {
+			JsonOutput.add(writer, "subject", issue.getSubject());
+		}
 		JsonOutput.addIfNotNull(writer, "parent_issue_id", issue.getParentId());
 		JsonOutput.addIfNotNull(writer, "estimated_hours",
 				issue.getEstimatedHours());
@@ -221,7 +225,9 @@ public class RedmineJSONBuilder {
         }
         if (issue.getAuthor() != null)
 			JsonOutput.addIfNotNull(writer, "author_id", issue.getAuthor().getId());
-		addShort2(writer, "start_date", issue.getStartDate());
+		if (issue.isStartDatePresent()) {
+			addShort2(writer, "start_date", issue.getStartDate());
+		}
 		addIfNotNullShort2(writer, "due_date", issue.getDueDate());
 		if (issue.getTracker() != null)
 			JsonOutput.addIfNotNull(writer, "tracker_id", issue.getTracker().getId());

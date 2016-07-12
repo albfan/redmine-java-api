@@ -135,6 +135,11 @@ public class JsonOutput {
 			writer.value(format.format(value));
 	}
 
+	public static void add(JSONWriter writer, String field, Object value) throws JSONException {
+		writer.key(field);
+		writer.value(value);
+	}
+
 	/**
 	 * Adds an object if object is not null.
 	 * 
