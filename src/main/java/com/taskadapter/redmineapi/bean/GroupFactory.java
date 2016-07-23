@@ -13,7 +13,7 @@ public class GroupFactory {
     }
 
     public static Group create(String name) {
-        final Group group = new Group(null);
+        final Group group = new Group(new PropertyStorage());
         group.setName(name);
         return group;
     }

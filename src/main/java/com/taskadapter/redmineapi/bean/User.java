@@ -145,7 +145,7 @@ public class User implements Identifiable {
 
         User user = (User) o;
 
-        return id != null ? id.equals(user.id) : user.id == null;
+        return getId() != null ? getId().equals(user.getId()) : user.getId() == null;
     }
 
     @Override
@@ -157,7 +157,7 @@ public class User implements Identifiable {
      * @return firstName + space + lastName
      */
     public String getFullName() {
-        return firstName + " " + lastName;
+        return getFirstName() + " " + getLastName();
     }
 
     /**

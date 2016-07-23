@@ -1,3 +1,4 @@
+package com.taskadapter.redmineapi;
 
 import com.taskadapter.redmineapi.bean.Attachment;
 import com.taskadapter.redmineapi.bean.WikiPage;
@@ -8,7 +9,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class WikiManagerTest {
 

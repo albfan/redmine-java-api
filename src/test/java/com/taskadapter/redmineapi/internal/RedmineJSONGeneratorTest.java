@@ -1,6 +1,7 @@
 package com.taskadapter.redmineapi.internal;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import com.taskadapter.redmineapi.bean.Group;
 import com.taskadapter.redmineapi.bean.GroupFactory;
@@ -47,7 +48,7 @@ public class RedmineJSONGeneratorTest {
 		Issue issue = new Issue();
 		issue.setSubject("subj1");
 		issue.setDoneRatio(null);
-		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", issue, RedmineJSONBuilder.ISSUE_WRITER);
+		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", issue, RedmineJSONBuilder::writeIssue);
 		assertThat(generatedJSON).contains("\"subject\":\"subj1\",");
 		assertThat(generatedJSON).contains("\"done_ratio\":null");
 	}
@@ -58,7 +59,7 @@ public class RedmineJSONGeneratorTest {
 		user.setLogin("login1");
 		user.setMail(null);
 		user.setStatus(null);
-		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", user, RedmineJSONBuilder.USER_WRITER);
+		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", user, RedmineJSONBuilder::writeUser);
 		assertThat(generatedJSON).contains("\"login\":\"login1\",");
 		assertThat(generatedJSON).contains("\"mail\":null");
 		assertThat(generatedJSON).contains("\"status\":null");
@@ -68,12 +69,12 @@ public class RedmineJSONGeneratorTest {
 	@Test
 	public void onlyExplicitlySetFieldsAreAddedToGroupJSon() {
 		Group groupWithoutName = GroupFactory.create(4);
-		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", groupWithoutName, RedmineJSONBuilder.GROUP_WRITER);
+		final String generatedJSON = RedmineJSONBuilder.toSimpleJSON("some_project_key", groupWithoutName, RedmineJSONBuilder::writeGroup);
 		assertThat(generatedJSON).doesNotContain("\"name\"");
 
 		Group groupWithName = GroupFactory.create(4);
 		groupWithName.setName("some name");
-		final String generatedJSONWithName = RedmineJSONBuilder.toSimpleJSON("some_project_key", groupWithName, RedmineJSONBuilder.GROUP_WRITER);
+		final String generatedJSONWithName = RedmineJSONBuilder.toSimpleJSON("some_project_key", groupWithName, RedmineJSONBuilder::writeGroup);
 		assertThat(generatedJSONWithName).contains("\"name\":\"some name\"");
 	}
 

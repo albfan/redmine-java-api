@@ -1,7 +1,5 @@
 package com.taskadapter.redmineapi.bean;
 
-import com.taskadapter.redmineapi.Include;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -36,14 +34,10 @@ public class Issue implements Identifiable {
     public final static Property<Integer> PARENT_ID = new Property<Integer>(Integer.class, "parentId");
     public final static Property<Integer> PRIORITY_ID = new Property<Integer>(Integer.class, "priorityId");
     public final static Property<Float> ESTIMATED_HOURS = new Property<Float>(Float.class, "estimatedHours");
-    public final static Property<Float> SPENT_HOURS = new Property<Float>(Float.class, "spentHours");
-    public final static Property<User> ASSIGNEE = new UserProperty("assignee");
+    public final static Property<Float> SPENT_HOURS = new Property<>(Float.class, "spentHours");
+    public final static Property<Integer> ASSIGNEE_ID = new Property<>(Integer.class, "assigneeId");
+    public final static Property<String> ASSIGNEE_NAME = new Property<>(String.class, "assigneeName");
 
-    private Integer parentId;
-    private Float estimatedHours;
-    private Float spentHours;
-    private Integer assigneeId;
-    private String assigneeName;
     /**
      * Some comment describing an issue update.
      */
@@ -54,8 +48,6 @@ public class Issue implements Identifiable {
     private User author;
     private Tracker tracker;
     private String description;
-    private Date createdOn;
-    private Date updatedOn;
     private Date closedOn;
     private Integer statusId;
     private String statusName;
@@ -127,19 +119,19 @@ public class Issue implements Identifiable {
      * <p>An assignee can be a user or a group</p>
      */
     public Integer getAssigneeId() {
-        return assigneeId;
+        return storage.get(ASSIGNEE_ID);
     }
 
     public void setAssigneeId(Integer assigneeId) {
-        this.assigneeId = assigneeId;
+        storage.set(ASSIGNEE_ID, assigneeId);
     }
 
     public String getAssigneeName() {
-        return assigneeName;
+        return storage.get(ASSIGNEE_NAME);
     }
 
     public void setAssigneeName(String assigneeName) {
-        this.assigneeName = assigneeName;
+        storage.set(ASSIGNEE_NAME, assigneeName);
     }
 
     public Float getEstimatedHours() {

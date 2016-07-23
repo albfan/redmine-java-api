@@ -50,7 +50,7 @@ public class Group implements Identifiable {
         Group group = (Group) o;
 
         if (getId() != null ? !getId().equals(group.getId()) : group.getId() != null) return false;
-
+        return true;
     }
 
     @Override

@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 public class UserTest {
     @Test
     public void customFieldWithDuplicateIDReplacesTheOldOne() {
