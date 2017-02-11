@@ -324,6 +324,47 @@ public class IssueManagerIT {
         assertThat(newDefaultIssue.isPrivateIssue()).isFalse();
     }
 
+    @Test
+    public void privateNoteFlagIsRespectedWhenAddingJournals() throws RedmineException {
+  
+      Issue privateIssueToCreate = IssueFactory.create(projectId, "private issue");
+      privateIssueToCreate.setPrivateIssue(true);
+      Issue newIssue = issueManager.createIssue(privateIssueToCreate);
+      assertThat(newIssue.isPrivateIssue()).isTrue();
+  
+      Issue publicIssueToCreate = IssueFactory.create(projectId, "public issue");
+      publicIssueToCreate.setPrivateIssue(false);
+      Issue newPublicIssue = issueManager.createIssue(publicIssueToCreate);
+      assertThat(newPublicIssue.isPrivateIssue()).isFalse();
+  
+      // default value for "is private" should be false
+      Issue newDefaultIssue = issueManager.createIssue(IssueFactory.create(projectId, "default public issue"));
+      assertThat(newDefaultIssue.isPrivateIssue()).isFalse();
+
+      // create at least 1 issue
+      Issue issueToCreate = new Issue();
+      issueToCreate.setSubject("testGetIssues: " + new Date());
+      issueToCreate.setProjectId(projectId);
+
+      newIssue = issueManager.createIssue(issueToCreate);
+
+      Issue loadedIssueWithJournals = issueManager.getIssueById(newIssue.getId(),
+          Include.journals);
+      assertTrue(loadedIssueWithJournals.getJournals().isEmpty());
+
+      String commentDescribingTheUpdate = "some comment describing the issue update";
+      loadedIssueWithJournals.setSubject("new subject");
+      loadedIssueWithJournals.setNotes(commentDescribingTheUpdate);
+      issueManager.update(loadedIssueWithJournals);
+
+      Issue loadedIssueWithJournals2 = issueManager.getIssueById(newIssue.getId(), Include.journals);
+      assertEquals(1, loadedIssueWithJournals2.getJournals().size());
+      
+      //TODO: Como no viene en la respuesta nada sobre si es una nota privada no hay mucho que hacer
+      
+      
+    }
+
     /* this test fails with Redmine 3.0.0-3.0.3 because Redmine 3.0.x started
      * returning "not authorized" instead of "not found" for projects with unknown Ids.
      * This worked differently with Redmine 2.6.x.
